@@ -1,0 +1,28 @@
+{
+    "voltage":{
+                "AC":{
+                    "multiplyer":10,
+                    "divider":1
+                    },
+                "DC":{
+                    "multiplyer":10,
+                    "divider":1
+                    }
+             },
+    "current":{
+                "AC":{
+                    "multiplyer":10,
+                    "divider":1
+                    },
+                "DC":{
+                    "multiplyer":10,
+                    "divider":1
+                    }
+             },
+    "torque":{
+        "multiplyer":100,
+        "divider":1
+    }
+}
+
+                
