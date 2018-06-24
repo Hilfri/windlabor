@@ -71,8 +71,9 @@ class PlotTK(tk.Frame):
         self.guiListe.delete(0, 'end')
         self.file_list = []
         for file_name in files:
-            self.guiListe.insert('end', file_name.replace(os.getcwd(),""))
-            self.file_list.append(file_name.replace(os.getcwd()+"/",""))
+            working_dir = os.getcwd().replace("\\", "/")
+            self.guiListe.insert('end', file_name.replace(working_dir,""))
+            self.file_list.append(file_name.replace(working_dir+"/",""))
 
     def process_data(self):
         calc = Calculator()
