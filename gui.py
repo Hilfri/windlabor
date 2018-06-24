@@ -162,7 +162,7 @@ class PlotTK(tk.Frame):
                 while True:
                     if glob.glob("graphs/{}.{}".format(htmlname,".html")):
                         i+=1
-                        htmlname = htmlname+"({})".format(i)
+                        htmlname = htmlname.replace("({})".format(i-1), "")+"({})".format(i)
                         continue
                     break
 
@@ -173,7 +173,7 @@ class PlotTK(tk.Frame):
             while True:
                 if glob.glob("excels/{}.{}".format(excelname,"xlsx")):
                     i+=1
-                    excelname = excelname+"({})".format(i)
+                    excelname = excelname.replace("({})".format(i-1), "")+"({})".format(i)
                     continue
                 break
             writer = pd.ExcelWriter("excels/{}.{}".format(excelname,"xlsx"))
@@ -186,10 +186,10 @@ class PlotTK(tk.Frame):
             while True:
                 if glob.glob("graphs/{}.".format(rpmname,"html")):
                     i+=1
-                    rpmname = rpmname+"({})".format(i)
+                    rpmname = rpmname.replace("({})".format(i-1), "")+"({})".format(i)
                     continue
                 break
-            plotter.plot_it(rpm_data, "graphs/{}.".format(rpmname,"html"), shapes, annos)
+            plotter.plot_it(rpm_data, "graphs/{}.{}".format(rpmname,"html"), shapes, annos)
     def settings(self):
         self.build_settings()
 
