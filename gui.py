@@ -5,6 +5,7 @@ from tkinter.filedialog import askopenfilenames
 from PIL import Image, ImageTk
 import myConfig
 import os
+import webbrowser as wb
 from calc import Calculator, Plotter
 
 
@@ -64,7 +65,7 @@ class PlotTK(tk.Frame):
         version.grid(sticky='S',column= 1, row=7, pady=5)
 
     def help_me(self):
-        print("help yourself!")
+        wb.open("https://isis.tu-berlin.de/mod/wiki/view.php?pageid=5463&group=0")
 
     def load_data(self):
         files = askopenfilenames(parent=self.parent, filetypes = (('Txt-File', '*.txt'),("All Files", "*.*")))
