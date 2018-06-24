@@ -1,2 +1,6 @@
-panda
+pandas
 plotly
+peakutils
+pillow
+openpyxl
+
