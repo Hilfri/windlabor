@@ -84,50 +84,47 @@ class PlotTK(tk.Frame):
         for filename in self.file_list:
             print("file")
             _filename =filename.replace(".txt","").split("/")[-1]
-            day, time, airgap, load, mps, id, iteration = _filename.split('_')
-            print("checked name")
-            df_list, ps_shapes, ps_annos, amp_shapes, amp_annos= calc.get_formatted_data(filename, int(mps))
-            print("got_data")
+            day, time, id, iteration = _filename.split('_')
+            df_list, ps_shapes, ps_annos, amp_shapes, amp_annos= calc.get_formatted_data(filename, 10000)
             filename=filename.replace(".txt","")
             time_data = []
             shapes = []
             annos = []
-            #for legend, df in enumerate(df_list):
             df = pd.concat(df_list)
             if myConfig.get("t_c_dc"):
-                time_data.append(plotter.make_graph(df, "time", "current_dc"," AG:{}|Load:{}".format(airgap,load)))
-                time_data.append(plotter.make_graph(df, "time", "eff_curr_dc"," AG:{}|Load:{}".format(airgap,load)))
+                time_data.append(plotter.make_graph(df, "time", "current_dc"," {}|{}".format(id, iteration)))
+                time_data.append(plotter.make_graph(df, "time", "eff_curr_dc"," {}|{}".format(id, iteration)))
             if myConfig.get("t_v_dc"):
-                time_data.append(plotter.make_graph(df, "time", "voltage_dc"," AG:{}|Load:{}".format(airgap,load)))
-                time_data.append(plotter.make_graph(df, "time", "eff_volt_dc"," AG:{}|Load:{}".format(airgap,load)))
+                time_data.append(plotter.make_graph(df, "time", "voltage_dc"," {}|{}".format(id, iteration)))
+                time_data.append(plotter.make_graph(df, "time", "eff_volt_dc"," {}|{}".format(id, iteration)))
             if myConfig.get("t_c_ac_1"):
-                time_data.append(plotter.make_graph(df, "time", "current_1"," AG:{}|Load:{}".format(airgap,load)))
-                time_data.append(plotter.make_graph(df, "time", "eff_curr_1"," AG:{}|Load:{}".format(airgap,load)))
+                time_data.append(plotter.make_graph(df, "time", "current_1"," {}|{}".format(id, iteration)))
+                time_data.append(plotter.make_graph(df, "time", "eff_curr_1"," {}|{}".format(id, iteration)))
             if myConfig.get("t_c_ac_2"):
-                time_data.append(plotter.make_graph(df, "time", "current_2"," AG:{}|Load:{}".format(airgap,load)))
-                time_data.append(plotter.make_graph(df, "time", "eff_curr_2"," AG:{}|Load:{}".format(airgap,load)))
+                time_data.append(plotter.make_graph(df, "time", "current_2"," {}|{}".format(id, iteration)))
+                time_data.append(plotter.make_graph(df, "time", "eff_curr_2"," {}|{}".format(id, iteration)))
             if myConfig.get("t_c_ac_3"):
-                time_data.append(plotter.make_graph(df, "time", "current_3"," AG:{}|Load:{}".format(airgap,load)))
-                time_data.append(plotter.make_graph(df, "time", "eff_curr_3"," AG:{}|Load:{}".format(airgap,load)))
+                time_data.append(plotter.make_graph(df, "time", "current_3"," {}|{}".format(id, iteration)))
+                time_data.append(plotter.make_graph(df, "time", "eff_curr_3"," {}|{}".format(id, iteration)))
             if myConfig.get("t_v_ac_1"):
-                time_data.append(plotter.make_graph(df, "time", "voltage_1"," AG:{}|Load:{}".format(airgap,load)))
-                time_data.append(plotter.make_graph(df, "time", "eff_volt_1"," AG:{}|Load:{}".format(airgap,load)))
+                time_data.append(plotter.make_graph(df, "time", "voltage_1"," {}|{}".format(id, iteration)))
+                time_data.append(plotter.make_graph(df, "time", "eff_volt_1"," {}|{}".format(id, iteration)))
             if myConfig.get("t_v_ac_2"):
-                time_data.append(plotter.make_graph(df, "time", "voltage_2"," AG:{}|Load:{}".format(airgap,load)))
-                time_data.append(plotter.make_graph(df, "time", "eff_volt_2"," AG:{}|Load:{}".format(airgap,load)))
+                time_data.append(plotter.make_graph(df, "time", "voltage_2"," {}|{}".format(id, iteration)))
+                time_data.append(plotter.make_graph(df, "time", "eff_volt_2"," {}|{}".format(id, iteration)))
             if myConfig.get("t_v_ac_3"):
-                time_data.append(plotter.make_graph(df, "time", "voltage_3"," AG:{}|Load:{}".format(airgap,load)))
-                time_data.append(plotter.make_graph(df, "time", "eff_volt_3"," AG:{}|Load:{}".format(airgap,load)))
+                time_data.append(plotter.make_graph(df, "time", "voltage_3"," {}|{}".format(id, iteration)))
+                time_data.append(plotter.make_graph(df, "time", "eff_volt_3"," {}|{}".format(id, iteration)))
             if myConfig.get("t_rpm"):
-                time_data.append(plotter.make_graph(df, "time", "rpm"," AG:{}|Load:{}".format(airgap,load)))
+                time_data.append(plotter.make_graph(df, "time", "rpm"," {}|{}".format(id, iteration)))
             if myConfig.get("t_torque"):
-                time_data.append(plotter.make_graph(df, "time", "torque"," AG:{}|Load:{}".format(airgap,load)))
+                time_data.append(plotter.make_graph(df, "time", "torque"," {}|{}".format(id, iteration)))
             if myConfig.get("t_input"):
-                time_data.append(plotter.make_graph(df, "time", "input"," AG:{}|Load:{}".format(airgap,load)))
+                time_data.append(plotter.make_graph(df, "time", "input"," {}|{}".format(id, iteration)))
             if myConfig.get("t_output"):
-                time_data.append(plotter.make_graph(df, "time", "output"," AG:{}|Load:{}".format(airgap,load)))
+                time_data.append(plotter.make_graph(df, "time", "output"," {}|{}".format(id, iteration)))
             if myConfig.get("t_eff"):
-                time_data.append(plotter.make_graph(df, "time", "efficiency"," AG:{}|Load:{}".format(airgap,load)))
+                time_data.append(plotter.make_graph(df, "time", "efficiency"," {}|{}".format(id, iteration)))
             if myConfig.get("t_amp"):
                 shapes+=amp_shapes
                 annos+=amp_annos
@@ -135,29 +132,29 @@ class PlotTK(tk.Frame):
                 shapes+=ps_shapes
                 annos+=ps_annos
             if myConfig.get("rpm_c_dc"):
-                rpm_data.append(plotter.make_graph(df, "rpm", "current_dc"," AG:{}|Load:{}".format(airgap,load)))
+                rpm_data.append(plotter.make_graph(df, "rpm", "current_dc"," {}|{}".format(id, iteration)))
             if myConfig.get("rpm_v_dc"):
-                rpm_data.append(plotter.make_graph(df, "rpm", "voltage_dc"," AG:{}|Load:{}".format(airgap,load)))
+                rpm_data.append(plotter.make_graph(df, "rpm", "voltage_dc"," {}|{}".format(id, iteration)))
             if myConfig.get("rpm_c_ac_1"):
-                rpm_data.append(plotter.make_graph(df, "rpm", "current_1"," AG:{}|Load:{}".format(airgap,load)))
+                rpm_data.append(plotter.make_graph(df, "rpm", "current_1"," {}|{}".format(id, iteration)))
             if myConfig.get("rpm_c_ac_2"):
-                rpm_data.append(plotter.make_graph(df, "rpm", "current_2"," AG:{}|Load:{}".format(airgap,load)))
+                rpm_data.append(plotter.make_graph(df, "rpm", "current_2"," {}|{}".format(id, iteration)))
             if myConfig.get("rpm_c_ac_3"):
-                rpm_data.append(plotter.make_graph(df, "rpm", "current_3"," AG:{}|Load:{}".format(airgap,load)))
+                rpm_data.append(plotter.make_graph(df, "rpm", "current_3"," {}|{}".format(id, iteration)))
             if myConfig.get("rpm_v_ac_1"):
-                rpm_data.append(plotter.make_graph(df, "rpm", "voltage_1"," AG:{}|Load:{}".format(airgap,load)))
+                rpm_data.append(plotter.make_graph(df, "rpm", "voltage_1"," {}|{}".format(id, iteration)))
             if myConfig.get("rpm_v_ac_2"):
-                rpm_data.append(plotter.make_graph(df, "rpm", "voltage_2"," AG:{}|Load:{}".format(airgap,load)))
+                rpm_data.append(plotter.make_graph(df, "rpm", "voltage_2"," {}|{}".format(id, iteration)))
             if myConfig.get("rpm_v_ac_3"):
-                rpm_data.append(plotter.make_graph(df, "rpm", "voltage_3"," AG:{}|Load:{}".format(airgap,load)))
+                rpm_data.append(plotter.make_graph(df, "rpm", "voltage_3"," {}|{}".format(id, iteration)))
             if myConfig.get("rpm_torque"):
-                rpm_data.append(plotter.make_graph(df, "rpm", "torque"," AG:{}|Load:{}".format(airgap,load)))
+                rpm_data.append(plotter.make_graph(df, "rpm", "torque"," {}|{}".format(id, iteration)))
             if myConfig.get("rpm_input"):
-                rpm_data.append(plotter.make_graph(df, "rpm", "input"," AG:{}|Load:{}".format(airgap,load)))
+                rpm_data.append(plotter.make_graph(df, "rpm", "input"," {}|{}".format(id, iteration)))
             if myConfig.get("rpm_output"):
-                rpm_data.append(plotter.make_graph(df, "rpm", "output"," AG:{}|Load:{}".format(airgap,load)))
+                rpm_data.append(plotter.make_graph(df, "rpm", "output"," {}|{}".format(id, iteration)))
             if myConfig.get("rpm_eff"):
-                rpm_data.append(plotter.make_graph(df, "rpm", "efficiency"," AG:{}|Load:{}".format(airgap,load)))
+                rpm_data.append(plotter.make_graph(df, "rpm", "efficiency"," {}|{}".format(id, iteration)))
             if time_data:
                 i=0
                 htmlname = _filename
