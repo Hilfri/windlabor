@@ -13,7 +13,7 @@ class PlotTK(tk.Frame):
     #GUI APP
     def __init__(self, parent):
         super().__init__(parent, background="white")
-        self.version = "Version 21.06.18"
+        self.version = "Version 06.07.18"
         self.parent=parent
         self.build()
 
@@ -82,7 +82,7 @@ class PlotTK(tk.Frame):
         rpm_data = []
         rpm_str = []
         for filename in self.file_list:
-            print("file")
+            print(filename)
             _filename =filename.replace(".txt","").split("/")[-1]
             day, time, id, iteration = _filename.split('_')
             df_list, ps_shapes, ps_annos, amp_shapes, amp_annos= calc.get_formatted_data(filename, 10000)
@@ -123,6 +123,8 @@ class PlotTK(tk.Frame):
                 time_data.append(plotter.make_graph(df, "time", "input"," {}|{}".format(id, iteration)))
             if myConfig.get("t_output"):
                 time_data.append(plotter.make_graph(df, "time", "output"," {}|{}".format(id, iteration)))
+            if myConfig.get("t_output_dc"):
+                time_data.append(plotter.make_graph(df, "time", "output_dc"," {}|{}".format(id, iteration)))
             if myConfig.get("t_eff"):
                 time_data.append(plotter.make_graph(df, "time", "efficiency"," {}|{}".format(id, iteration)))
             if myConfig.get("t_amp"):
@@ -131,6 +133,10 @@ class PlotTK(tk.Frame):
             if myConfig.get("t_ps"):
                 shapes+=ps_shapes
                 annos+=ps_annos
+            if myConfig.get("t_volt_orig"):
+                time_data.append(plotter.make_graph(df, "time", "_voltage_1"," {}|{}".format(id, iteration)))
+                time_data.append(plotter.make_graph(df, "time", "_voltage_2"," {}|{}".format(id, iteration)))
+                time_data.append(plotter.make_graph(df, "time", "_voltage_3"," {}|{}".format(id, iteration)))
             if myConfig.get("rpm_c_dc"):
                 rpm_data.append(plotter.make_graph(df, "rpm", "current_dc"," {}|{}".format(id, iteration)))
             if myConfig.get("rpm_v_dc"):
@@ -153,6 +159,8 @@ class PlotTK(tk.Frame):
                 rpm_data.append(plotter.make_graph(df, "rpm", "input"," {}|{}".format(id, iteration)))
             if myConfig.get("rpm_output"):
                 rpm_data.append(plotter.make_graph(df, "rpm", "output"," {}|{}".format(id, iteration)))
+            if myConfig.get("rpm_output_dc"):
+                time_data.append(plotter.make_graph(df, "time", "output_dc"," {}|{}".format(id, iteration)))
             if myConfig.get("rpm_eff"):
                 rpm_data.append(plotter.make_graph(df, "rpm", "efficiency"," {}|{}".format(id, iteration)))
             if time_data:
@@ -346,38 +354,51 @@ class PlotTK(tk.Frame):
         tk.Checkbutton(settings, variable=self.rpm_output).grid(row=11, column=2)
         self.rpm_output.set(myConfig.get("rpm_output"))
 
-        tk.Label(settings, text="Efficiency").grid(row=12, column=0)
+        tk.Label(settings, text="Output DC").grid(row=12, column=0)
+        self.t_output_dc = tk.IntVar() #Current DC über Zeit
+        self.t_output_dc.set(myConfig.get("t_output_dc"))
+        tk.Checkbutton(settings, variable=self.t_output_dc).grid(row=12, column=1)
+        self.rpm_output_dc = tk.IntVar() #current DC über RPM
+        tk.Checkbutton(settings, variable=self.rpm_output_dc).grid(row=12, column=2)
+        self.rpm_output_dc.set(myConfig.get("rpm_output_dc"))
+
+        tk.Label(settings, text="Efficiency").grid(row=13, column=0)
         self.t_eff = tk.IntVar() #Current DC über Zeit
         self.t_eff.set(myConfig.get("t_eff"))
-        tk.Checkbutton(settings, variable=self.t_eff).grid(row=12, column=1)
+        tk.Checkbutton(settings, variable=self.t_eff).grid(row=13, column=1)
         self.rpm_eff = tk.IntVar() #current DC über RPM
-        tk.Checkbutton(settings, variable=self.rpm_eff).grid(row=12, column=2)
+        tk.Checkbutton(settings, variable=self.rpm_eff).grid(row=13, column=2)
         self.rpm_eff.set(myConfig.get("rpm_eff"))
 
-        tk.Label(settings, text="Amplitude (V)").grid(row=13, column=0)
+        tk.Label(settings, text="Amplitude (V)").grid(row=14, column=0)
         self.t_amp = tk.IntVar() #Current DC über Zeit
         self.t_amp.set(myConfig.get("t_amp"))
-        tk.Checkbutton(settings, variable=self.t_amp).grid(row=13, column=1)
+        tk.Checkbutton(settings, variable=self.t_amp).grid(row=14, column=1)
         
-        tk.Label(settings, text="Phaseshift (V)").grid(row=14, column=0)
+        tk.Label(settings, text="Phaseshift (V)").grid(row=15, column=0)
         self.t_ps = tk.IntVar() #Current DC über Zeit
         self.t_ps.set(myConfig.get("t_ps"))
-        tk.Checkbutton(settings, variable=self.t_ps).grid(row=14, column=1)
+        tk.Checkbutton(settings, variable=self.t_ps).grid(row=15, column=1)
 
-        tk.Label(settings, text="Torque").grid(row=15, column=0)
+        tk.Label(settings, text="Volt(only factors)").grid(row=16, column=0)
+        self.t_volt_orig = tk.IntVar() #Current DC über Zeit
+        self.t_volt_orig.set(myConfig.get("t_volt_orig"))
+        tk.Checkbutton(settings, variable=self.t_volt_orig).grid(row=16, column=1)
+
+        tk.Label(settings, text="Torque").grid(row=17, column=0)
         self.t_torque = tk.IntVar() #Current DC über Zeit
         self.t_torque.set(myConfig.get("t_torque"))
-        tk.Checkbutton(settings, variable=self.t_torque).grid(row=15, column=1)
+        tk.Checkbutton(settings, variable=self.t_torque).grid(row=17, column=1)
 
-        tk.Label(settings, text="RPM").grid(row=16, column=0)
+        tk.Label(settings, text="RPM").grid(row=18, column=0)
         self.t_rpm = tk.IntVar() #Current DC über Zeit
         self.t_rpm.set(myConfig.get("t_rpm"))
-        tk.Checkbutton(settings, variable=self.t_rpm).grid(row=16, column=1)
+        tk.Checkbutton(settings, variable=self.t_rpm).grid(row=18, column=1)
 
         saveBtn = tk.Button(settings, text="Save", command = self.save_settings_2, height=1, width=15)      
-        saveBtn.grid(row=17,column=0)
+        saveBtn.grid(row=19,column=0)
         saveBtn = tk.Button(settings, text="Abbrechen", command = settings.destroy, height=1, width=15)
-        saveBtn.grid(row=17, column=2)
+        saveBtn.grid(row=19, column=2)
 
     def save_settings_2(self):
         myConfig.update("t_c_dc", self.t_c_dc.get())
@@ -390,11 +411,13 @@ class PlotTK(tk.Frame):
         myConfig.update("t_v_ac_3", self.t_v_ac_3.get())
         myConfig.update("t_input", self.t_input.get())
         myConfig.update("t_output", self.t_output.get())
+        myConfig.update("t_output_dc", self.t_output_dc.get())
         myConfig.update("t_eff", self.t_eff.get())
         myConfig.update("t_amp", self.t_amp.get())
         myConfig.update("t_ps", self.t_ps.get())
         myConfig.update("t_rpm", self.t_rpm.get())
         myConfig.update("t_torque", self.t_torque.get())
+        myConfig.update("t_volt_orig", self.t_volt_orig.get())
 
         myConfig.update("rpm_c_dc", self.rpm_c_dc.get())
         myConfig.update("rpm_v_dc", self.rpm_v_dc.get())
@@ -419,3 +442,4 @@ def main():
 
 if __name__ =="__main__":
     main()
+

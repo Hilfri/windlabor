@@ -95,12 +95,12 @@ class Calculator():
         self.headers = ['time', 
                         'current_1', 
                         'current_3', 
-                        'voltage_1', 
-                        'voltage_3', 
+                        '_voltage_1', 
+                        '_voltage_3', 
                         'frequency_2', 
                         'current_2',
                         'current_dc',
-                        'voltage_2',
+                        '_voltage_2',
                         'voltage_dc',
                         'torque',
                         'frequency_1'
@@ -108,14 +108,14 @@ class Calculator():
 
     def calc_frequency(self,df, f1,f2, mps):
         multi = mps/200.0
-        df[f1] = df[f1].apply(np.fix).diff().divide(5).abs().rolling(200).sum().multiply(multi).divide(360)
-        df[f2] = df[f2].apply(np.fix).diff().divide(5).abs().rolling(200).sum().multiply(multi).divide(360)
+        df[f1] = df[f1].apply(np.fix).diff().divide(5).abs().rolling(200).sum().multiply(multi).divide(720)
+        df[f2] = df[f2].apply(np.fix).diff().divide(5).abs().rolling(200).sum().multiply(multi).divide(720)
         df.frequency = df[[f1,f2]].mean(axis=1)
         return df
     def calc_output(self, df):
-        df['volt_sum'] = df[["eff_volt_1", "eff_volt_2", "eff_volt_3"]].mean(axis=1).multiply(3)
+        df['volt_sum'] = df[["eff_volt_1", "eff_volt_2", "eff_volt_3"]].mean(axis=1)
         df['curr_sum'] = df[["eff_curr_1", "eff_curr_2", "eff_curr_3"]].mean(axis=1)
-        df.output=df.volt_sum*df.curr_sum
+        df.output=df.volt_sum*df.curr_sum.multiply(np.sqrt(3))
         return df.output
         
     def load_measurements(self,filename):
@@ -132,7 +132,7 @@ class Calculator():
     
     def apply_factors(self, df):
         for i in [1,2,3]:
-            df['voltage_{}'.format(i)] = df['voltage_{}'.format(i)].multiply(self.ac_v_factor)
+            df['_voltage_{}'.format(i)] = df['_voltage_{}'.format(i)].multiply(self.ac_v_factor)
             df['current_{}'.format(i)] = df['current_{}'.format(i)].multiply(self.ac_c_factor)
         df['voltage_dc'] = df['voltage_dc'].multiply(self.dc_v_factor)
         df['current_dc'] = df['current_dc'].multiply(self.dc_c_factor)
@@ -143,7 +143,7 @@ class Calculator():
         for i in [1,2,3,'dc']:
             df['eff_volt_{}'.format(i)] = np.nan
             df['eff_curr_{}'.format(i)] = np.nan
-        for i in ['frequency', 'rpm', 'input', 'output', 'efficiency']:
+        for i in ['frequency', 'rpm', 'input', 'output', 'efficiency', 'output_dc']:
             df[i] = np.nan
         return df
 
@@ -151,6 +151,13 @@ class Calculator():
         blanks = df[df.isnull().all(1)].index
         gaps = df[df.time.diff()>pd.Timedelta(0.1,'ms')].index
         return np.split(df, np.sort(np.append(blanks,gaps)))
+
+    def apply_star_thing(self, df):
+        df['voltage_1'] = df['_voltage_2']-df['_voltage_1']
+        df['voltage_2'] = df['_voltage_1']-df['_voltage_3']
+        df['voltage_3'] = df['_voltage_3']-df['_voltage_2']
+        return df
+
 
     def get_formatted_data(self, filename, mps):
         """
@@ -162,6 +169,7 @@ class Calculator():
         df['time']=pd.to_datetime(df['time'], format='%d.%m.%Y  %H:%M:%S,%f')
         df = self.fix_dots(df)
         df = self.apply_factors(df)
+        df = self.apply_star_thing(df)
         df = self.add_new_cols(df)
         df_list = self.split_at_gaps(df)
         new_df = df[0:0]
@@ -276,6 +284,7 @@ class Calculator():
                 _df.eff_curr_3.iloc[zeros_c_3[i]:zeros_c_3[i+2]] = np.sqrt(np.mean(np.square(x)))   
             _df.eff_curr_dc = _df.current_dc.mean()
             _df.output = self.calc_output(_df)#_df.eff_curr_1.multiply(_df.eff_volt_1).multiply(3)
+            _df.output_dc = _df.eff_volt_dc*_df.eff_curr_dc
             _df.input = _df.frequency*_df.torque*2*np.pi
             _df.efficiency = np.where(_df.output.isnull(), None, _df.output/_df.input)
             datas.append(_df)
@@ -430,17 +439,25 @@ class Plotter():
                 
 
     def make_graph(self,df, x, y, postfix):
-        return dict(
+        if x == 'rpm':
+            return dict(
                     x=df[x],
                     y=df[y],
-                    line=dict(width=2),
                     name=y+postfix,
                     connectgaps=False
                     )
+        return dict(
+                x=df[x],
+                y=df[y],
+                line=dict(width=2),
+                name=y+postfix,
+                connectgaps=False
+                )
 
     def plot_it(self, data, file_name, shapes, annotations):
         layout = go.Layout(showlegend=True, shapes=shapes)
         fig = go.Figure(data=data+annotations, layout=layout)
         return plot(fig, filename=file_name)            
+
 
 
