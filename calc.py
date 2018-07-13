@@ -443,6 +443,7 @@ class Plotter():
             return dict(
                     x=df[x],
                     y=df[y],
+                    mode='markers',
                     name=y+postfix,
                     connectgaps=False
                     )

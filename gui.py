@@ -13,7 +13,7 @@ class PlotTK(tk.Frame):
     #GUI APP
     def __init__(self, parent):
         super().__init__(parent, background="white")
-        self.version = "Version 06.07.18"
+        self.version = "Version 13.07.18"
         self.parent=parent
         self.build()
 
